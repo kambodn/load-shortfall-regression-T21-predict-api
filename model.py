@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import json
+from sklearn import preprocessing
 
 def _preprocess_data(data):
     """Private helper function to preprocess data for model prediction.
@@ -58,9 +59,44 @@ def _preprocess_data(data):
     # ---------------------------------------------------------------
 
     # ----------- Replace this code with your own preprocessing steps --------
-    predict_vector = feature_vector_df[['Madrid_wind_speed','Bilbao_rain_1h','Valencia_wind_speed']]
+    df = feature_vector_df
+    df = df.drop(['Unnamed: 0', "Barcelona_temp",
+                  'Barcelona_temp_min',
+                 'Bilbao_temp',
+                  'Bilbao_temp_max',
+                  'Madrid_temp',
+                  'Madrid_temp_min',
+                  'Seville_temp_min',
+                  'Valencia_temp',
+                  'Valencia_temp_min',
+                  'timeDayofyear',
+                  'timeElapsed',
+                  'timeWeek',
+                  'timeYear', 
+                  'Madrid_weather_id', 
+                  'Barcelona_weather_id', 
+                  'Seville_weather_id', 
+                  'Bilbao_weather_id'], axis=1)
+    names = df.columns
+    #Extract only numbers out of Seville_pressure and Valencia_wind_deg columns
+    df['Seville_pressure'] = df['Seville_pressure'].str.extract('(\d+)')
+    df['Seville_pressure'] = pd.to_numeric(df['Seville_pressure'])
+    df['Valencia_wind_deg'] = df['Valencia_wind_deg'].str.extract('(\d+)')
+    df['Valencia_wind_deg'] = pd.to_numeric(df['Valencia_wind_deg'])
+    # fill Valencia_pressure NAN values with mode
+    df['Valencia_pressure'] = df['Valencia_pressure'].fillna(1016.0)
+    # fill NAN values with mode
+    #for i in df.columns:
+    #    if df[i].isnull().sum()>0:
+    #        df[i]=df[i].fillna(df[i].mode()[0])
+    # create scaler object
+    scaler = preprocessing.StandardScaler()
+    # create scaled version of the predictors
+    X_scaled = scaler.fit_transform(df)
+    predict_vector= pd.DataFrame(X_scaled, columns=names)
+    
     # ------------------------------------------------------------------------
-
+    
     return predict_vector
 
 def load_model(path_to_model:str):
