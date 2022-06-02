@@ -15,7 +15,7 @@
       - [2.2) Running the API on your local machine](#22-running-the-api-on-your-local-machine)
       - [2.3) Updating the API to use your own model](#23-updating-the-api-to-use-your-own-model)
         - [Prerequisites](#prerequisites)
-        - [Making the changes](#making-the-changes)
+        - [Making the changes](#making-the-changes.)
       - [2.4) Running the API on a remote AWS EC2 instance](#24-running-the-api-on-a-remote-aws-ec2-instance)
   - [3) FAQ](#3-faq)
 
